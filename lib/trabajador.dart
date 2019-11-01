@@ -26,8 +26,8 @@ int dato;
 
 _TrabajadorPage(this.dato);
 
-Map data;
 List userData;
+
 
   SharedPreferences sharedPreferences;
   
@@ -35,10 +35,21 @@ getUsers() async  {
 
   print(this.dato);
     String id=this.dato.toString();
-    String url = 'http://172.16.200.159:3000/api/trabajadorentidades?id_usuario=' + id;
+    String url = 'http://192.168.1.59:3000/api/trabajadorentidades?id_usuario=' + id;
     final Response response = await Client().get(url);
+    var objeto = json.decode(response.body);
+
+    var datos={
+      "datas":objeto
+    };
+
     print(url);
     debugPrint(response.body);
+    print(datos);
+    //print(objeto[0].entidad);
+    setState(() {
+     userData = datos['datas']; 
+    });
   }
   @override
   void initState() {
@@ -70,10 +81,10 @@ getUsers() async  {
           return Card(
             child: Row(children: <Widget>[
               Padding(
-                padding: const EdgeInsets.all(8.0),
+                padding: const EdgeInsets.all(20.5),
                 child:Text("$index"),
               ),
-                Text("${userData[index]["id_entidad" "entidad" "cantidad"]}"),
+                Text("${userData[index]["entidad"]} "+   "    Cantidad de Sucursales: "    +" ${userData[index]["cantidad_sucursales"]}"),
             ],),
           );
         },
@@ -163,5 +174,20 @@ class CreateListTitle extends StatelessWidget {
         ),
       ),
     );
+  }
+}
+class Entidad {
+  int id_entidad;
+  String entidad;
+  int cantidad_sucursales;
+
+  Entidad({this.id_entidad, this.entidad, this.cantidad_sucursales});
+
+  factory Entidad.fromJson(Map<String, dynamic> json) {
+    return Entidad(
+        id_entidad: json['id_entidad'] as int,
+        entidad: json['entidad'] as String,
+        cantidad_sucursales:json['cantidad_sucursales'] as int);
+        
   }
 }

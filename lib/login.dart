@@ -53,7 +53,7 @@ class _LoginPageState extends State<LoginPage> {
 ///////////////////////////
 Map data;
   Future<dynamic> signIn(String username, String password) async {
-    String url = 'http://172.16.200.159:3000/api/login?username=' +
+    String url = 'http://192.168.1.59:3000/api/login?username=' +
         username +
         "&password=" +
         password;
@@ -70,7 +70,12 @@ Map data;
     print(objeto[0].id_usuario);
     int id=objeto[0].id_usuario;
 
-    if (objeto[0].tipo == "trabajador") {
+    if(username == "username" && password == "password"){
+      String mensaje= "usuario o contraseña incorrecta";
+      print(mensaje);
+    
+    }else{
+      if (objeto[0].tipo == "trabajador") {
       Navigator.push(
         context,
         MaterialPageRoute(builder: (context) => TrabajadorPage(dato: id,)),
@@ -84,6 +89,7 @@ Map data;
         context,
         MaterialPageRoute(builder: (context) => ClientePage()),
       );
+    }
     }
     //return json.decode(response.body);
   }
@@ -99,12 +105,42 @@ Map data;
         onPressed: emailController.text == "" || passwordController.text == ""
             ? null
             : () {
+              if(emailController.text=='username'&&passwordController.text=="password"){
                 setState(() {
-                  _isLoading = true;
+                  _isLoading = false;
                   print('conecto');
                 });
                 signIn(emailController.text, passwordController.text);
-              },
+              }else{
+                setState(() {
+                  _isLoading=true;
+                  print('no conecto');
+                });
+                 signIn(emailController.text, passwordController.text);
+                showDialog(
+                  context: context,
+                  builder: (context)=>AlertDialog(
+                  title: Text("Error"),
+                  content: Text("Usuario y contraseña incorrectos. Intente de nuevo"),
+                  actions: <Widget>[
+                    FlatButton(
+                      child: Text("ok"),
+                      onPressed: (){
+                        Navigator.of(context).pop(LoginPage());
+                      },
+                    ),
+                    FlatButton(
+                      child: Text("Cancelar"),
+                      onPressed: (){
+                        Navigator.of(context).pop("Cancelar");
+                      },
+                    )
+                  ],
+
+                )
+                );
+              }
+            },
         elevation: 0.0,
         color: Colors.green,
         child: Text("Sign In", style: TextStyle(color: Colors.white70)),

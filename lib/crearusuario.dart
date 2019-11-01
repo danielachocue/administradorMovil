@@ -165,7 +165,7 @@ class _SignUpPageState extends State<SignUpPage> {
 _makePostRequest(String name, String email, String password, String tipo) async {
   // set up POST request arguments
   
-  var url = 'http://172.16.200.159:3000/api/usser';
+  var url = 'http://192.168.1.59:3000/api/usser';
    
  /* Map data={
     'name':nombre,
